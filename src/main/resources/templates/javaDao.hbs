@@ -1,0 +1,10 @@
+package {{packageName}}.dao;
+
+import com.koreanair.mybatis.IDaoProvider;
+import org.apache.ibatis.annotations.Mapper;
+import {{packageName}}.model.{{pojoName}};
+
+@Mapper
+public interface {{pojoName}}Dao extends IDaoProvider<{{pojoName}}> {
+
+}

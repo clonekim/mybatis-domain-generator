@@ -1,0 +1,10 @@
+{{#if jsonPrefix}}
+{{jsonPrefix}}: {
+     {{#columns}}{{lower name}}: null{{#unless @last}},{{/unless}}
+     {{/columns}}
+}
+{{else}}{
+   {{#columns}}{{lower name}}: null{{#unless @last}},{{/unless}}
+   {{/columns}}
+}
+{{/if}}

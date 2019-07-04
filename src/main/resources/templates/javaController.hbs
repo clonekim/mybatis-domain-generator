@@ -1,0 +1,76 @@
+package {{packageName}}.controller;
+
+import com.koreanair.mybatis.Pagination;
+import {{packageName}}.dao.{{pojoName}}Dao;
+import {{packageName}}.model.{{pojoName}};
+import com.koreanair.util.BeanUtil;
+import com.koreanair.util.Transform;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.Map;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/{{lower pojoName}}")
+public class PdmUnitController {
+
+    @Autowired
+    {{pojoName}}Dao {{firstCap pojoName}}Dao;
+
+    Transform<String, {{pojoName}}> transform = id -> {
+        {{pojoName}} t = new {{pojoName}}()
+        /*
+            Your Code here!
+        */
+            return t;
+        }
+        else {
+            return null;
+        }
+    };
+
+    @GetMapping
+    public Pagination select{{pojoName}}(@RequestParam Map<String, Object> map, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "20") Integer size) {
+        return {{firstCap pojoName}}Dao.selectWithPage(map, Pagination.of(page, size));
+    }
+
+    @PostMapping
+    public ResponseEntity<?> insert{{pojoName}}(@Valid @RequestBody {{pojoName}} body) {
+        {{firstCap pojoName}}Dao.insert(body);
+        return ResponseEntity.ok(body);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> select{{pojoName}}(@PathVariable String id, @RequestParam Map<String ,Object> map) {
+        {{pojoName}} pojo = transform.apply(id);
+        BeanUtil.copyToMap(pojo, map);
+        Optional<{{pojoName}}> optional = {{firstCap pojoName}}Dao.select(map).stream().findFirst();
+
+        if (optional.isPresent())
+            return ResponseEntity.ok(optional);
+        else
+            return ResponseEntity.notFound().build();
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update{{pojoName}}(@PathVariable String id, @Valid @RequestBody {{pojoName}} body) {
+        {{firstCap pojoName}}Dao.update(body);
+        return ResponseEntity.ok(body);
+    }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete{{pojoName}}(@PathVariable String id) {
+        {{pojoName}} model = transform.apply(id);
+        {{firstCap pojoName}}Dao.delete(model);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
+}

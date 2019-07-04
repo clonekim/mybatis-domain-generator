@@ -1,0 +1,16 @@
+package {{packageName}}.model;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.NoArgsConstructor;
+import lombok.Data;
+{{#if validation}}import javax.validation.constraints.*;{{/if}}
+
+@Data
+@NoArgsConstructor
+public class {{pojoName}} {
+  {{#columns}}
+  @JsonProperty("{{lower name}}")
+  {{javaSig this}}
+  {{/columns}}
+}
