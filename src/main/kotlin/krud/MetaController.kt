@@ -15,8 +15,7 @@ class MetaController {
     @Autowired
     internal var metaReader: MetaReader? = null
 
-    @PostMapping
-    @RequestMapping("/meta")
+    @PostMapping("/meta")
     fun scanMeta(@Valid @RequestBody schema: Schema): ResponseEntity<Any> {
         return try {
             val tables = metaReader!!.connect(schema)
@@ -31,8 +30,8 @@ class MetaController {
     }
 
     @PostMapping("/scaffold/{template}")
-    fun createScaffold(@RequestBody table: Table, @PathVariable template: String ): String {
-        var sw = StringWriter()
+    fun createScaffold(@RequestBody table: Table, @PathVariable template: String ): Map<String, String> {
+        val sw = StringWriter()
         BufferedWriter(sw).use { out ->
 
             TemplateService.process(
@@ -42,6 +41,9 @@ class MetaController {
             )
         }
 
-        return sw.toString()
+        return mapOf(
+                "name" to template,
+                "source" to sw.toString()
+        )
     }
 }

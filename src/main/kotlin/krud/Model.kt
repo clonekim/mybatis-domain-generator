@@ -1,11 +1,13 @@
 package krud
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.constraints.NotEmpty
 
 data class Schema (
         @NotEmpty
         var schema: String,
+
         @NotEmpty
         var tables: List<Table> = mutableListOf()
 )
@@ -43,7 +45,13 @@ data class Table(
         val jsonPrefix: String? = null,
 
         @JsonProperty("columns")
-        var columns: List<Column> = mutableListOf()
+        var columns: List<Column> = mutableListOf(),
+
+        @JsonIgnore
+        var updates: List<Column> = mutableListOf(),
+
+        @JsonIgnore
+        var keys: List<String> = mutableListOf()
 )
 
 

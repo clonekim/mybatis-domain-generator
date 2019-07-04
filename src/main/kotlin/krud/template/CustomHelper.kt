@@ -3,7 +3,6 @@ package krud.template
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
-import krud.Column
 import org.apache.commons.text.CaseUtils
 import java.io.IOException
 
@@ -25,8 +24,7 @@ enum class CustomHelper : Helper<Object> {
 
     sharp {
         override fun toApply(value: Any, options: Options): String {
-            val column = options.context.model() as Column
-            return String.format("#{%s}", column.name.toLowerCase())
+            return String.format("#{%s}", value.toString().toLowerCase())
         }
     };
 

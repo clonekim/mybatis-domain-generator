@@ -48,25 +48,29 @@
     <update id="_update" parameterType="Map">
         UPDATE {{name}}
         <trim prefix="SET" suffixOverrides=",">
-        {{#columns}}
+        {{#updates}}
             <if test=" {{lower name}} != null {{#eq javaType "String"}}and {{lower name}}.trim() != ''{{/eq}} ">
                 {{name}} = {{sharp name}},
-            </if>{{/columns}}
+            </if>{{/updates}}
         </trim>
         WHERE
+        {{#keys}}{{#unless @first}}AND {{/unless}}{{.}} = {{sharp .}}
+        {{/keys}}
     </update>
 
-    <select id="checkIfExists" parameterType="Map" resultType="int">
+    <select id="_checkIfExists" parameterType="Map" resultType="int">
         SELECT
           COUNT(1)
         FROM {{name}}
         WHERE
-        {{#columns}}{{#if key}}{{#unless @first}}AND {{/unless}}{{name}} = {{sharp name}}
-        {{/if}}{{/columns}}
+        {{#keys}}{{#unless @first}}AND {{/unless}}{{.}} = {{sharp .}}
+        {{/keys}}
     </select>
 
 
     <delete id="_delete" parameterType="Map">
         DELETE FROM {{name}} WHERE
+        {{#keys}}{{#unless @first}}AND {{/unless}}{{.}} = {{sharp }}
+        {{/keys}}
     </delete>
 </mapper>

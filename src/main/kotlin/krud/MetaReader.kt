@@ -16,7 +16,7 @@ class MetaReader {
         return LoggerFactory.getLogger(T::class.java)
     }
 
-    val log = logger<MetaReader>()
+    val log = logger()
 
     @Autowired
     var dataSource: DataSource? = null

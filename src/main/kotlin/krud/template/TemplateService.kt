@@ -11,7 +11,7 @@ import java.io.Writer
 object TemplateService {
 
 
-    private val handlebars = Handlebars(ClassPathTemplateLoader("templates").apply {
+    private val handlebars = Handlebars(ClassPathTemplateLoader("/templates").apply {
         suffix = ".hbs"
     }).with(EscapingStrategy.XML).apply {
         JavaSignature.register(this)
@@ -26,12 +26,14 @@ object TemplateService {
             "model" to handlebars.compile("javaModel"),
             "dao" to handlebars.compile("javaDao"),
             "controller" to handlebars.compile("javaController"),
-            "vueData" to handlebars.compile("vueData"),
-            "mybatisMapper" to handlebars.compile("mybatisMapper")
+            "vue" to handlebars.compile("vueData"),
+            "mapper" to handlebars.compile("mybatisMapper")
     )
 
 
     fun process(writer: Writer, table: Table, hbs: String) {
+        table.keys = table.columns.filter { it.key }.map { it.name }
+        table.updates = table.columns.filter { !it.key }
         hbsMap[hbs]?.apply(table, writer)
     }
 }
