@@ -32,5 +32,6 @@ build/
 
 ### NodeJS ###
 krud-ui/node_modules
+krud-ui/*.lock
 *.lock
 
