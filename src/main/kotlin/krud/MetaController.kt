@@ -30,7 +30,7 @@ class MetaController {
     }
 
     @PostMapping("/scaffold/{template}")
-    fun createScaffold(@RequestBody table: Table, @PathVariable template: String ): Map<String, String> {
+    fun createScaffold(@RequestBody table: Table, @PathVariable template: String ): String {
         val sw = StringWriter()
         BufferedWriter(sw).use { out ->
 
@@ -41,9 +41,6 @@ class MetaController {
             )
         }
 
-        return mapOf(
-                "name" to template,
-                "source" to sw.toString()
-        )
+        return sw.toString()
     }
 }
