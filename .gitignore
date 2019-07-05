@@ -31,7 +31,8 @@ build/
 .vscode/
 
 ### NodeJS ###
-krud-ui/node_modules
+krud-ui/node_modules/
 krud-ui/*.lock
 *.lock
+src/main/resources/static/**
 
