@@ -1,5 +1,6 @@
 package {{packageName}}.controller;
 
+import com.koreanair.exception.ResourceNotFoundException;
 import com.koreanair.mybatis.Pagination;
 import {{packageName}}.dao.{{pojoName}}Dao;
 import {{packageName}}.model.{{pojoName}};
@@ -40,36 +41,46 @@ public class PdmUnitController {
 
     @PostMapping
     public ResponseEntity<?> insert{{pojoName}}(@Valid @RequestBody {{pojoName}} body) {
+        Optional optional = {{firstCap pojoName}}Dao.checkIf(body);
+        if(optional.isPresent())
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+
         {{firstCap pojoName}}Dao.insert(body);
-        return ResponseEntity.ok(body);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> select{{pojoName}}(@PathVariable String id, @RequestParam Map<String ,Object> map) {
         {{pojoName}} pojo = transform.apply(id);
         BeanUtil.copyToMap(pojo, map);
-        Optional<{{pojoName}}> optional = {{firstCap pojoName}}Dao.select(map).stream().findFirst();
-
-        if (optional.isPresent())
-            return ResponseEntity.ok(optional);
-        else
-            return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(
+                {{firstCap pojoName}}Dao
+                        .select(map)
+                        .stream()
+                        .findFirst()
+                        .orElseThrow(ResourceNotFoundException::new));
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update{{pojoName}}(@PathVariable String id, @Valid @RequestBody {{pojoName}} body) {
-        {{firstCap pojoName}}Dao.update(body);
-        return ResponseEntity.ok(body);
+        {{pojoName}} pojo = transform.apply(id);
+        BeanUtils.copyProperties(pojo, body);
+        Optional optional = {{firstCap pojoName}}Dao.update(body);
+        if(optional.isPresent())
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.notFound().build();
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete{{pojoName}}(@PathVariable String id) {
         {{pojoName}} model = transform.apply(id);
-        {{firstCap pojoName}}Dao.delete(model);
+        if({{firstCap pojoName}}Dao.delete(model).isPresent())
+            return ResponseEntity.noContent().build();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.noFound().build();
     }
 
 

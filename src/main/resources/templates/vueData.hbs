@@ -1,3 +1,4 @@
+/* Vue Data */
 {{#if jsonPrefix}}
 {{jsonPrefix}}: {
      {{#columns}}{{lower name}}: null{{#unless @last}},{{/unless}}
@@ -8,3 +9,24 @@
    {{/columns}}
 }
 {{/if}}
+
+/* Vue Simple Validation */
+{{#if jsonPrefix}}
+    {{#columns}}'{{jsonPrefix}}.{{lower name}}' (value) {
+        return this.$validator.value(value).required()
+    }{{#unless @last}},{{/unless}}
+    {{/columns}}
+{{else}}
+{{#columns}}
+    {{lower name}} (value) {
+        return this.$validator.value(value).required()
+    }{{#unless @last}},{{/unless}}
+{{/columns}}
+{{/if}}
+
+/* Vue Validation Success */
+this.$validate().then( success => {
+    if(!success)
+      return
+    /* Your Code */
+})
