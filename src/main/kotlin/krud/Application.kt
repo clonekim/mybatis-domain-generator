@@ -16,6 +16,14 @@ fun main(args: Array<String>) {
 	runApplication<DemoApplication>(*args)
 }
 
+/*
+@PostConstruct
+fun setTimeZone() {
+	TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
+}
+*/
+
+
 @Configuration
 class WebConfig: WebMvcConfigurer {
 
