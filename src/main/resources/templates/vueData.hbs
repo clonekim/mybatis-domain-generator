@@ -11,6 +11,7 @@
 {{/if}}
 
 /* Vue Simple Validation */
+validators: {
 {{#if jsonPrefix}}
     {{#columns}}'{{jsonPrefix}}.{{lower name}}' (value) {
         return this.$validator.value(value).required()
@@ -20,9 +21,9 @@
 {{#columns}}
     {{lower name}} (value) {
         return this.$validator.value(value).required()
-    }{{#unless @last}},{{/unless}}
-{{/columns}}
+    }{{#unless @last}},{{/unless}}{{/columns}}
 {{/if}}
+}
 
 /* Vue Validation Success */
 this.$validate().then( success => {

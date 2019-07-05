@@ -1,6 +1,5 @@
 package {{packageName}}.controller;
 
-import com.koreanair.exception.ResourceNotFoundException;
 import com.koreanair.mybatis.Pagination;
 import {{packageName}}.dao.{{pojoName}}Dao;
 import {{packageName}}.model.{{pojoName}};
@@ -16,7 +15,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/{{lower pojoName}}")
+@RequestMapping("/api/{{snakebar pojoName}}")
 public class PdmUnitController {
 
     @Autowired
@@ -53,12 +52,15 @@ public class PdmUnitController {
     public ResponseEntity<?> select{{pojoName}}(@PathVariable String id, @RequestParam Map<String ,Object> map) {
         {{pojoName}} pojo = transform.apply(id);
         BeanUtil.copyToMap(pojo, map);
-        return ResponseEntity.ok(
-                {{firstCap pojoName}}Dao
-                        .select(map)
-                        .stream()
-                        .findFirst()
-                        .orElseThrow(ResourceNotFoundException::new));
+        Optional optional = {{firstCap pojoName}}Dao
+                .select(map)
+                .stream()
+                .findFirst();
+
+        if(optional.isPresent())
+            return ResponseEntity.ok(optional);
+        else
+            return ResponseEntity.notFound().build();
     }
 
 

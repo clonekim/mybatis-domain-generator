@@ -15,6 +15,9 @@ class MetaController {
     @Autowired
     internal var metaReader: MetaReader? = null
 
+    @Autowired
+    var templateService: TemplateService? = null
+
     @PostMapping("/meta")
     fun scanMeta(@Valid @RequestBody schema: Schema): ResponseEntity<Any> {
         return try {
@@ -34,7 +37,7 @@ class MetaController {
         val sw = StringWriter()
         BufferedWriter(sw).use { out ->
 
-            TemplateService.process(
+            templateService!!.process(
                     out,
                     table,
                     template

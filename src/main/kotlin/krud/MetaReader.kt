@@ -1,7 +1,5 @@
 package krud
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import java.sql.DatabaseMetaData
@@ -11,12 +9,7 @@ import javax.sql.DataSource
 @Component
 class MetaReader {
 
-
-    private inline fun <reified T> T.logger(): Logger {
-        return LoggerFactory.getLogger(T::class.java)
-    }
-
-    val log = logger()
+    companion object:KtLog()
 
     @Autowired
     var dataSource: DataSource? = null
@@ -69,7 +62,7 @@ class MetaReader {
                 sqlType = try {
                     SqlType.valueOf(rs.getString("TYPE_NAME"))
                 } catch (e: java.lang.IllegalArgumentException) {
-                    log.info("Replaced by default fallback type (String)")
+                    log.info("Replaced by default fallback type (String) => DATA_TYPE({}) TYPE_NAME({})", rs.getInt("DATA_TYPE"), rs.getString("TYPE_NAME"))
                     SqlType.valueOf("VARCHAR")
                 }
 

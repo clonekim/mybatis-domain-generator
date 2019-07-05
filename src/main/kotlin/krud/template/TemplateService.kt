@@ -5,18 +5,17 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.helper.ConditionalHelpers
 import com.github.jknack.handlebars.helper.StringHelpers
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
+import krud.KtLog
 import krud.Table
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Component
 import java.io.Writer
 
-object TemplateService {
+@Component
+class TemplateService {
 
-    private inline fun <reified T> T.logger(): Logger {
-        return LoggerFactory.getLogger(T::class.java)
-    }
+    companion object:KtLog()
 
-    val log = logger()
+
     private val handlebars = Handlebars(ClassPathTemplateLoader("/templates").apply {
         suffix = ".hbs"
     }).with(EscapingStrategy.XML).apply {
@@ -28,13 +27,14 @@ object TemplateService {
             registerHelper(h.name, h)
     }
 
-    private val hbsMap = mapOf(
+    private val hbsMap by lazy { mapOf(
             "model" to handlebars.compile("javaModel"),
             "dao" to handlebars.compile("javaDao"),
             "controller" to handlebars.compile("javaController"),
             "vue" to handlebars.compile("vueData"),
             "mapper" to handlebars.compile("mybatisMapper")
-    )
+    )}
+
 
 
     fun process(writer: Writer, table: Table, hbs: String) {
