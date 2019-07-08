@@ -24,12 +24,11 @@ public class {{pojoName}}Controller {
     {{pojoName}}Dao {{firstCap pojoName}}Dao;
 
     Transform<String, {{pojoName}}> transform = id -> {
-        if( id == null )
+        if (id == null)
             return null;
 
         {{pojoName}} t = new {{pojoName}}();
-        {{#eq keysize 1}}{{#keys}}t.set{{setter .}}(id);
-        {{/keys}}{{/eq}}
+        {{#eq keysize 1}}{{#keys}}t.set{{setter .}}(id);{{/keys}}{{/eq}}
         {{#gt keysize 1}}
         String[] parts = id.split("-");
         {{#keys}}
