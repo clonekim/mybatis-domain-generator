@@ -1,11 +1,13 @@
 package {{packageName}}.controller;
 
-import com.koreanair.mybatis.Pagination;
 import {{packageName}}.dao.{{pojoName}}Dao;
 import {{packageName}}.model.{{pojoName}};
+import com.koreanair.mybatis.Pagination;
 import com.koreanair.util.BeanUtil;
 import com.koreanair.util.Transform;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,21 +18,20 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/{{snakebar pojoName}}")
-public class PdmUnitController {
+public class {{pojoName}}Controller {
 
     @Autowired
     {{pojoName}}Dao {{firstCap pojoName}}Dao;
 
     Transform<String, {{pojoName}}> transform = id -> {
-        {{pojoName}} t = new {{pojoName}}()
+        if( id == null )
+            return null;
+
+        {{pojoName}} t = new {{pojoName}}();
         /*
             Your Code here!
         */
-            return t;
-        }
-        else {
-            return null;
-        }
+        return t;
     };
 
     @GetMapping
@@ -67,8 +68,8 @@ public class PdmUnitController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update{{pojoName}}(@PathVariable String id, @Valid @RequestBody {{pojoName}} body) {
         {{pojoName}} pojo = transform.apply(id);
-        BeanUtils.copyProperties(pojo, body);
-        Optional optional = {{firstCap pojoName}}Dao.update(body);
+        BeanUtils.copyProperties(body, pojo);
+        Optional optional = {{firstCap pojoName}}Dao.update(pojo);
         if(optional.isPresent())
             return ResponseEntity.ok().build();
         else
@@ -82,7 +83,7 @@ public class PdmUnitController {
         if({{firstCap pojoName}}Dao.delete(model).isPresent())
             return ResponseEntity.noContent().build();
 
-        return ResponseEntity.noFound().build();
+        return ResponseEntity.notFound().build();
     }
 
 
