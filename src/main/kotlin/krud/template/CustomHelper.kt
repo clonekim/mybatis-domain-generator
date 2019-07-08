@@ -19,7 +19,12 @@ enum class CustomHelper : Helper<Any> {
         override fun toApply(value: Any, options: Options): String {
             return CaseUtils.toCamelCase(value.toString(), false, '_')
         }
+    },
 
+    setter {
+        override fun toApply(value: Any, options: Options): String {
+            return CaseUtils.toCamelCase(value.toString(), true, '_')
+        }
     },
 
     sharp {

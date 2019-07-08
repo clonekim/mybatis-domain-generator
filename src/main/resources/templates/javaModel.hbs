@@ -13,4 +13,13 @@ public class {{pojoName}} {
   @JsonProperty("{{lower name}}")
   {{javaSig this}}
   {{/columns}}
+
+  {{#if keys}}
+  public String getId() {
+    return String.format("{{#keys}}%s{{#unless @last}}-{{/unless}}{{/keys}}",
+        {{#keys}}{{javaName this}}{{#unless @last}}, {{/unless}}{{/keys}}
+    );
+  }
+  {{/if}}
 }
+
