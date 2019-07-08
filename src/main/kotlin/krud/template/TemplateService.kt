@@ -23,6 +23,7 @@ class TemplateService {
         CustomHelper.register(this)
         StringHelpers.register(this)
 
+
         for (h in ConditionalHelpers.values())
             registerHelper(h.name, h)
     }
@@ -41,6 +42,7 @@ class TemplateService {
         log.debug("Processing ==> {}, Template => {}", table, hbs)
         table.keys = table.columns.filter { it.key }.map { it.name }
         table.updates = table.columns.filter { !it.key }
+        table.keysize = table.keys.size
         hbsMap[hbs]?.apply(table, writer)
     }
 }

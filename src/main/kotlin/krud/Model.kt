@@ -51,9 +51,11 @@ data class Table(
         var updates: List<Column> = mutableListOf(),
 
         @JsonIgnore
-        var keys: List<String> = mutableListOf()
-)
+        var keys: List<String> = mutableListOf(),
 
+        @JsonIgnore
+        var keysize: Int
+)
 
 
 data class Column(

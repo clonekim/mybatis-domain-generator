@@ -1,13 +1,14 @@
 package krud.template
 
+import com.fasterxml.jackson.databind.node.ArrayNode
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
 import org.apache.commons.text.CaseUtils
 import java.io.IOException
 
-enum class CustomHelper : Helper<Any> {
 
+enum class CustomHelper : Helper<Any> {
    firstCap {
        override fun toApply(value: Any, options: Options): String {
            val v = value.toString()
@@ -43,7 +44,8 @@ enum class CustomHelper : Helper<Any> {
         }
     };
 
-    protected  abstract fun toApply(value: Any, options: Options): String
+
+    protected  abstract fun toApply(value: Any, options: Options): Any
 
     @Throws(IOException::class)
     override fun apply(value: Any?, options: Options): Any? {
@@ -54,6 +56,7 @@ enum class CustomHelper : Helper<Any> {
             value?.let { this.toApply(it, options) }
         }
     }
+
 
     companion object {
 

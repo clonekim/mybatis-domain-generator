@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>krud</groupId>
 	<artifactId>krud</artifactId>
-	<version>0.5</version>
+	<version>0.0.7</version>
 	<name>krud-server</name>
 	<description>Demo project for Spring Boot</description>
 

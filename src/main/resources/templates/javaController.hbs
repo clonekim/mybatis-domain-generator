@@ -27,10 +27,14 @@ public class {{pojoName}}Controller {
         if( id == null )
             return null;
 
-        String[] parts = id.split("-");
         {{pojoName}} t = new {{pojoName}}();
+        {{#eq keysize 1}}{{#keys}}t.set{{setter .}}(id);
+        {{/keys}}{{/eq}}
+        {{#gt keysize 1}}
+        String[] parts = id.split("-");
         {{#keys}}
          t.set{{setter .}}(parts[{{@index}}]);{{/keys}}
+        {{/gt}}
         /*
             Your Code here!
         */
