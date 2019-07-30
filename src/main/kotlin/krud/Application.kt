@@ -3,26 +3,32 @@ package krud
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.http.CacheControl
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import org.springframework.web.servlet.resource.PathResourceResolver
+import java.util.*
+import javax.annotation.PostConstruct
 
 @SpringBootApplication
-class DemoApplication
+class DemoApplication {
+	companion object:KtLog()
 
-fun main(args: Array<String>) {
-	runApplication<DemoApplication>(*args)
+	fun main(args: Array<String>) {
+		runApplication<DemoApplication>(*args)
+	}
+
+
+	@Profile("linux")
+	@PostConstruct
+	fun setTimeZone() {
+		log.debug("[linux profile] timeZone to Asia/Seoul")
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
+	}
+
 }
-
-/*
-@PostConstruct
-fun setTimeZone() {
-	TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"))
-}
-*/
-
 
 @Configuration
 class WebConfig: WebMvcConfigurer {
