@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component
 import java.sql.DatabaseMetaData
 import java.sql.ResultSet
 import java.sql.SQLException
-import java.util.ArrayList
 import javax.sql.DataSource
 import javax.validation.Valid
 import javax.validation.constraints.NotEmpty
@@ -35,6 +34,9 @@ class MetaReader {
                 readColumn(sqlModel, metaData)
             }
         }
+
+        if(sqlModel.columns.isEmpty())
+            throw Exception("테이블이 없습니다")
 
         return sqlModel
     }
@@ -155,14 +157,15 @@ class MetaReader {
                 }
 
 
-
-                sqlModel.samples +=  mutableListOf<Any>(rows.map {
-                        it.map{ m -> m["column"]}
+                if(rows.size > 0) {
+                    sqlModel.samples += mutableListOf<Any>(rows.map {
+                        it.map { m -> m["column"] }
                     }.first())
 
 
-                sqlModel.samples += rows.map {
-                    it.map{ m -> m["value"]}
+                    sqlModel.samples += rows.map {
+                        it.map { m -> m["value"] }
+                    }
                 }
 
 
