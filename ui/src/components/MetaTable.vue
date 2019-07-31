@@ -1,6 +1,6 @@
 <template>
   <div>
-    <fieldset>
+    <fieldset style="padding:20px">
       <legend>Meta Data:</legend>
       <div v-show="!sqlTurnOn">
         <label for="schema">스키마 </label>
@@ -35,15 +35,15 @@
 
       <div v-show="sqlTurnOn" style="margin-top:5px;">
         <label for="sql">SQL</label>
-        <textarea cols="120" id="sql" v-model="param.statement" rows="10"></textarea>
+        <textarea cols="120" id="sql" v-model="param.statement" rows="10" spellcheck="false"></textarea>
         <span v-if="validation.hasError('param.statement')" style="color:#ff0000">
           {{validation.firstError('param.statement')}}
         </span>
       </div>
 
-      <button class="primary" @click.prevent="scanTable">Scan</button>
+      <button class="alignRight" style="width:60px;height:30px"  @click.prevent="scanTable">Scan</button>
 
-      <span style="margin-left:35px;">
+      <span>
         <label>SQL직접입력<input type="checkbox" v-model="sqlTurnOn" /></label>
         <label v-show="sqlTurnOn">샘플링<input type="checkbox" v-model="param.sampling" /></label>
       </span>
@@ -107,41 +107,45 @@
 
         <div>
           <div>
-            <label>모델사용 <input type="checkbox" v-model="param.model"></label>
-            <label>감추기 <input type="checkbox" v-model="hideCol[0]"></label>
+            <label>모델사용
+              <a class="box" href="#ref_model">#</a>
+              <input type="checkbox" v-model="param.model">
+            </label>
+
+              <label> Validation
+                <a class="box" href="#ref_vue">#</a>
+                <input type="checkbox" v-model="param.validation">
+              </label>
           </div>
 
           <div v-if="!sqlTurnOn">
-            <label>컨트롤러사용 <input type="checkbox" v-model="param.controller"></label>
-            <label>감추기 <input type="checkbox" v-model="hideCol[1]"></label>
+            <label>컨트롤러사용
+              <a class="box" href="#ref_controller">#</a>
+              <input type="checkbox" v-model="param.controller"></label>
           </div>
 
           <div>
-            <label>Dao사용 <input type="checkbox" v-model="param.dao"></label>
-            <label>감추기 <input type="checkbox" v-model="hideCol[2]"></label>
+            <label>Dao사용
+              <a class="box" href="#ref_dao">#</a>
+              <input type="checkbox" v-model="param.dao"></label>
           </div>
 
           <div>
-            <label>MyBatis <input type="checkbox" v-model="param.mapper"></label>
-            <label>감추기 <input type="checkbox" v-model="hideCol[3]"></label>
-          </div>
-
-          <div>
-            <label>MyBatis ResultMap <input type="checkbox" v-model="param.result_map"></label>
+            <label>MyBatis<a class="box" href="#ref_mapper">#</a><input type="checkbox" v-model="param.mapper"></label>
+            <label>ResultMap <input type="checkbox" v-model="param.result_map"></label>
           </div>
 
 
           <div>
-            <label>입력검증 <input type="checkbox" v-model="param.validation"> </label>
-          </div>
+            <label>JSON
+              <a class="box" href="#ref_vue">#</a>
+              <input type="checkbox" v-model="param.vue">
+            </label>
 
-          <div>
-            <label>JSON <input type="checkbox" v-model="param.vue"></label>
-            <label>감추기 <input type="checkbox" v-model="hideCol[4]"></label>
-          </div>
+            <label v-if="param.vue">
+              JSON Prefix: <input type="text" v-model="param.json_prefix">
+            </label>
 
-          <div v-if="param.vue">
-            JSON Prefix: <input type="text" v-model="param.json_prefix">
           </div>
 
           <button @click.prevent="makeSource">소스보기</button>
@@ -174,9 +178,9 @@
        viewSample: false, // 실제 샘플보기
        param: {
          schema: 'UKFOS',
-         name: 'USER_NOTIFICATION_T',
-         package_name: 'com.koreanair.a',
-         pojo_name: 'UserNotification',
+         name: null,
+         package_name: 'com.koreanair.',
+         pojo_name: null,
          json_prefix: null,
          model: false,
          dao: false,
@@ -189,8 +193,7 @@
          sampling: false
        },
        columns: [],
-       samples: [],
-       hideCol: [false, false, false, false, false]
+       samples: []
      }
    },
 
@@ -205,13 +208,23 @@
    },
 
    watch:{
+
      sqlTurnOn(v) {
        if(v === false)
          this.param.statement = null
-     },
 
-     hideCol(v) {
-       this.$bus.$emit('onHide', v)
+       if(v === true) {
+         this.param = Object.assign(this.param, {
+           schema: null,
+           name: null,
+           mapper: false,
+           controller: false,
+           validation: false,
+           vue: false,
+           result_map: false
+         })
+       }
+
      }
 
    },
@@ -236,23 +249,30 @@
          }
 
 
+         this.$emit('onProcessing', true)
+
          this.$http
              .post('/meta', data)
              .then( res => {
                this.columns = res.data.columns
                this.samples = res.data.samples
+
              })
              .catch( err => {
-
-               if(err.response.status === 400) {
-                 let {message, errorCode} = err.response.data
-                 alert([message, `(ErrorCode: ${errorCode})`].join('\n'))
-               } else {
-                 alert('에러')
-               }
+               debugger
+               let {message, errorCode} = err.response.data
+               alert([message || err.response.text, `(ErrorCode: ${errorCode||'Server Error(500)'})`].join('\n'))
 
                this.columns = []
                this.samples = []
+
+
+             })
+             .finally(() => {
+               setTimeout(() => {
+                 this.$emit('onProcessing', false)
+               }, 600)
+
              })
        })
      },
@@ -302,5 +322,19 @@
    border: 1px solid #999;
    border-bottom: 1px solid #999;
    padding: 4px;
+ }
+
+ .alignRight {
+   position: absolute;
+   right: 60px;
+ }
+
+
+ a.box {
+   text-decoration: none;
+   padding: 2px;
+   text-align: center;
+   text-decoration: none;
+   display: inline-block;
  }
 </style>
