@@ -1,8 +1,14 @@
 <template>
-  <fieldset v-show="!model.hide">
+  <fieldset>
     <legend>{{model.name ||'Source'}}</legend>
-    <h3 v-if="!model.source">소스 정보가 없습니다</h3>
-    <pre>{{model.source}}</pre>
+    <span v-if="!model.source">소스 정보가 없습니다</span>
+    <div v-show="wait">
+      Conneting...
+    </div>
+
+    <button @click.prevent="copyAndPaste" class="alignRight" >Copy&Paste</button>
+
+    <pre v-show="!wait" v-bind:id="'ref_'+ format ">{{model.source}}</pre>
   </fieldset>
 </template>
 
@@ -12,35 +18,26 @@
      format: {
        type: String,
        required: true
-     },
-     hideIndex: {
-       type: String,
-       required: true
      }
    },
 
    data() {
      return {
+       wait: false,
+
        model: {
          name: '',
-         source: '',
-         hide: false
+         source: ''
        }
      }
    },
 
    created() {
-     this.$bus.$on('onHide', (e) => {
-       let val = e [parseInt(this.hideIndex)]
-       this.model.hide = val ||false
-     })
 
      this.$bus.$on('onSource', (data) => {
 
-
-
        if(data[`${this.format}`] === true) {
-         console.log(data)
+
 
          let format = null
 
@@ -49,17 +46,25 @@
          else
            format = this.format
 
+
+         this.wait = true
+
          this.$http
-                        .post(`/source/${format}`, Object.assign({}, data,  format !== 'sql'? {statement: null} : {}))
-                        .then( res => {
-                          this.model.source = res.data
-                        })
+             .post(`/source/${format}`, Object.assign({}, data,  format !== 'sql'? {statement: null} : {}))
+             .then( res => {
+               this.model.source = res.data
+             }).finally(() => {
+
+               setTimeout(() => {
+                 this.wait = false
+               }, 600)
+
+             })
 
        }else {
          Object.assign(this.model, {
            name: '',
-           source: '',
-           hide: false
+           source: ''
          })
        }
 
@@ -68,13 +73,27 @@
 
    beforeDestroy() {
      this.$bus.$off('onSource')
-     this.$bus.$off('onHide')
    },
 
    methods: {
-     hide() {
-       this.model.hide = true
-       this.$bus.$emit('updateHide', parseInt(this.hideIndex))
+
+     copyAndPaste() {
+
+       if(!this.model.source) {
+         alert('소스내용이 없습니다')
+         return
+       }
+
+
+       let el = document.createElement('textarea')
+       document.body.append(el)
+       el.value = this.model.source
+       el.select()
+
+       document.execCommand('copy')
+       document.body.removeChild(el)
+
+       alert('복사 되었습니다')
      }
    }
  }
