@@ -4,7 +4,7 @@ import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
 import krud.Column
-import krud.Table
+import krud.SqlModel
 import org.apache.commons.text.CaseUtils
 import java.io.IOException
 
@@ -19,7 +19,7 @@ class JavaSignature : Helper<Column> {
         val expr = ArrayList<String>()
 
         val scale = context.scale
-        val table = options.context.parent().model() as Table
+        val table = options.context.parent().model() as SqlModel
         val javaBeanPropName = CaseUtils.toCamelCase(context.name, false, '_')
 
         if (table.validation) {

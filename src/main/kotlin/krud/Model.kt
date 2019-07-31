@@ -4,19 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.constraints.NotEmpty
 
-data class Schema (
-        @NotEmpty
-        var schema: String,
 
-        @NotEmpty
-        var tables: List<Table> = mutableListOf()
-)
+data class SqlModel(
 
-data class Table(
+        @JsonProperty("schema")
+        var schema: String? = null,
 
         @JsonProperty("name")
-        @NotEmpty
-        val name: String,
+        val name: String? = null,
 
         @JsonProperty("package_name")
         @NotEmpty
@@ -54,8 +49,18 @@ data class Table(
         var keys: List<String> = mutableListOf(),
 
         @JsonIgnore
-        var keysize: Int
+        var keysize: Int = 0,
+
+        @JsonProperty("statement")
+        val statement: String? = null,
+
+        @JsonProperty("sampling")
+        val sampling: Boolean = false,
+
+        @JsonProperty("samples")
+        var samples: List<Any?> = mutableListOf<List<Any>>()
 )
+
 
 
 data class Column(

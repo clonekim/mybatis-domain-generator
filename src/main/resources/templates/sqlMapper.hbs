@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="{{packageName}}.dao.{{pojoName}}Dao">
+
+    {{#if useResultMap}}<resultMap type="{{packageName}}.model.{{pojoName}}" id="{{pojoName}}Result">
+        {{#columns}}{{#eq dataType 2005}}<result property="{{javaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType}}" />{{else}}<result property="{{javaName name}}" column="{{name}}"/>{{/eq}}
+        {{/columns}}
+    </resultMap>{{/if}}
+
+    <sql id="selectWhere">
+        {{statement}}
+        <where>{{#columns}}
+            <if test=" {{lower name}} != null {{#eq javaType "String"}}and {{lower name}}.trim() != ''{{/eq}} ">
+                AND {{name}} = {{sharp name}}
+            </if>{{/columns}}
+        </where>
+    </sql>
+
+
+    <select id="_select" parameterType="Map" resultType="{{packageName}}.model.{{pojoName}}">
+        <include refid="selectWhere" />
+    </select>
+
+
+    <select id="selectCount" parameterType="Map" resultType="int">
+        <include refid="selectWhere" />
+    </select>
+
+
+</mapper>

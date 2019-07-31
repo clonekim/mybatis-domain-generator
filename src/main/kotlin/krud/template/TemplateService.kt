@@ -6,7 +6,7 @@ import com.github.jknack.handlebars.helper.ConditionalHelpers
 import com.github.jknack.handlebars.helper.StringHelpers
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import krud.KtLog
-import krud.Table
+import krud.SqlModel
 import org.springframework.stereotype.Component
 import java.io.Writer
 
@@ -18,7 +18,7 @@ class TemplateService {
 
     private val handlebars = Handlebars(ClassPathTemplateLoader("/templates").apply {
         suffix = ".hbs"
-    }).with(EscapingStrategy.XML).apply {
+    }).with(EscapingStrategy.XML).with(EscapingStrategy.NOOP) .apply {
         JavaSignature.register(this)
         CustomHelper.register(this)
         StringHelpers.register(this)
@@ -33,17 +33,18 @@ class TemplateService {
             "dao" to handlebars.compile("javaDao"),
             "controller" to handlebars.compile("javaController"),
             "vue" to handlebars.compile("vueData"),
-            "mapper" to handlebars.compile("mybatisMapper")
+            "mapper" to handlebars.compile("mybatisMapper"),
+            "sql" to handlebars.compile("sqlMapper")
     )}
 
 
 
-    fun process(writer: Writer, table: Table, hbs: String) {
-        log.debug("Processing ==> {}, Template => {}", table, hbs)
-        table.keys = table.columns.filter { it.key }.map { it.name }
-        table.updates = table.columns.filter { !it.key }
-        table.keysize = table.keys.size
-        hbsMap[hbs]?.apply(table, writer)
+    fun process(writer: Writer, sqlModel: SqlModel, hbs: String) {
+        log.debug("Processing ==> {}, Template => {}", sqlModel, hbs)
+        sqlModel.keys = sqlModel.columns.filter { it.key }.map { it.name }
+        sqlModel.updates = sqlModel.columns.filter { !it.key }
+        sqlModel.keysize = sqlModel.keys.size
+        hbsMap[hbs]?.apply(sqlModel, writer)
     }
 }
 
