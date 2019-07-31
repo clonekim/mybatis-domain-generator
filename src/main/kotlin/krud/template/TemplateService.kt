@@ -44,6 +44,13 @@ class TemplateService {
         sqlModel.keys = sqlModel.columns.filter { it.key }.map { it.name }
         sqlModel.updates = sqlModel.columns.filter { !it.key }
         sqlModel.keysize = sqlModel.keys.size
+
+        if(sqlModel.statement != null) {
+            sqlModel.statement = sqlModel.statement!!
+                    .replace("<", "&lg;")
+                    .replace(">", "&gt;")
+        }
+
         hbsMap[hbs]?.apply(sqlModel, writer)
     }
 }

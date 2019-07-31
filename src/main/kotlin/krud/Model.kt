@@ -52,7 +52,7 @@ data class SqlModel(
         var keysize: Int = 0,
 
         @JsonProperty("statement")
-        val statement: String? = null,
+        var statement: String? = null,
 
         @JsonProperty("sampling")
         val sampling: Boolean = false,
