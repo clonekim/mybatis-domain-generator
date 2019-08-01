@@ -51,9 +51,12 @@
 
          this.$http
              .post(`/source/${format}`, Object.assign({}, data,  format !== 'sql'? {statement: null} : {}))
-             .then( res => {
-               this.model.source = res.data
-             }).finally(() => {
+             .then( res =>  this.model.source = res.data )
+             .catch( err => {
+                let { status, message, trace} = err.response.data
+                alert([message, `status: ${status}`, trace].join('\n'))
+             })
+             .finally(() => {
 
                setTimeout(() => {
                  this.wait = false
