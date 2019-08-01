@@ -91,7 +91,7 @@
             <td>{{col.name}}</td>
             <td>{{col.data_type}}</td>
             <td>{{col.sql_type}}</td>
-            <td>{{col.java_type}}</td>
+            <td><ColumnType :propSelected="col.java_type" @onColumnTypeSelected="onColumnTypeSelected(col, $event)" :condition="columTypeCondition(col)" /></td>
             <td>{{col.null}}</td>
             <td v-if="col.scale">
               size: {{col.scale.size}}, precision: {{col.scale.precision}}
@@ -112,8 +112,7 @@
               <input type="checkbox" v-model="param.model">
             </label>
 
-              <label> Validation
-                <a class="box" href="#ref_vue">#</a>
+              <label v-if="param.model"> Validation
                 <input type="checkbox" v-model="param.validation">
               </label>
           </div>
@@ -132,7 +131,7 @@
 
           <div>
             <label>MyBatis<a class="box" href="#ref_mapper">#</a><input type="checkbox" v-model="param.mapper"></label>
-            <label>ResultMap <input type="checkbox" v-model="param.result_map"></label>
+            <label v-if="param.mapper">ResultMap <input type="checkbox" v-model="param.result_map"></label>
           </div>
 
 
@@ -148,17 +147,17 @@
 
           </div>
 
-          <button @click.prevent="makeSource">소스보기</button>
+          <button @click.prevent="makeSource">소스생성</button>
         </div>
 
       </div>
     </fieldset>
 
-    <source-panel format="model"       hide-index="0"/>
-    <source-panel format="controller"  hide-index="1"/>
-    <source-panel format="dao"         hide-index="2"/>
-    <source-panel format="mapper"      hide-index="3"/>
-    <source-panel format="vue"         hide-index="4"/>
+    <source-panel format="model"       />
+    <source-panel format="controller"  />
+    <source-panel format="dao"         />
+    <source-panel format="mapper"      />
+    <source-panel format="vue"         />
 
   </div>
 </template>
@@ -166,10 +165,12 @@
 <script>
 
  import SourcePanel from './SourcePanel'
+ import ColumnType  from './ColumnType'
 
  export default {
    components: {
-     SourcePanel
+     SourcePanel,
+     ColumnType
    },
 
    data() {
@@ -197,15 +198,7 @@
      }
    },
 
-   created() {
-     this.$bus.$on('updateHide', (index) => {
-       this.hideCol[ index ] = true
-     })
-   },
 
-   beforeDestroy() {
-     this.$bus.$off('updateHide')
-   },
 
    watch:{
 
@@ -230,6 +223,15 @@
    },
 
    methods: {
+     columTypeCondition(col) {
+        return !col.scale
+     },
+
+     onColumnTypeSelected (col, e) {
+        col.java_type = e.name
+        col.option = e
+     },
+
      scanTable() {
        this.$validate().then( success => {
 
@@ -259,13 +261,10 @@
 
              })
              .catch( err => {
-               debugger
                let {message, errorCode} = err.response.data
                alert([message || err.response.text, `(ErrorCode: ${errorCode||'Server Error(500)'})`].join('\n'))
-
                this.columns = []
                this.samples = []
-
 
              })
              .finally(() => {

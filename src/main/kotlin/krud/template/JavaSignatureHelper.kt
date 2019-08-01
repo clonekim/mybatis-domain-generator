@@ -31,6 +31,10 @@ class JavaSignature : Helper<Column> {
                 expr.add(String.format("@JsonFormat(shape = JsonFormat.Shape.NUMBER)"))
             }
 
+            if (context.option?.format?.isNotEmpty() == true) {
+                expr.add(String.format("@JsonFormat(pattern = \"%s\")", context.option?.format))
+            }
+
             if (scale != null) {
                 expr.add(String.format("@Digits(integer=%d, fraction=%d)",
                         context.scale!!.size,
@@ -52,10 +56,10 @@ class JavaSignature : Helper<Column> {
                 scale.size > 12 -> expr.add(String.format("private Long %s;", javaBeanPropName))
                 else -> expr.add(String.format("private Integer %s;", javaBeanPropName))
             }
-
         } else {
-            expr.add(String.format("private %s %s;", if (context.javaType == "Date") "java.util.Date" else context.javaType, javaBeanPropName))
+            expr.add(String.format("private %s %s;", (context.option?.value ?: context.javaType), javaBeanPropName))
         }
+
 
         return  expr.joinToString(separator = "\n")
 

@@ -85,6 +85,9 @@ data class Column(
         @JsonProperty("data_type")
         var dataType: Int,
 
+        @JsonProperty("option")
+        var option: Option? = null,
+
         @JsonProperty("scale")
         var scale: Scale? = null) {
 
@@ -95,6 +98,7 @@ data class Column(
 
 data class Scale(var size: Int, var precision: Int )
 
+data class Option(val name: String, val value: String, val format: String?= null)
 
 enum class SqlType(val type: String) {
     VARCHAR("String"),
