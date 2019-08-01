@@ -24,7 +24,8 @@ class JavaSignature : Helper<Column> {
 
         if (table.validation) {
             if (context.javaType == "String") {
-                expr.add(String.format("@Size(max=%s)", context.size))
+                if(context.size > 0)
+                    expr.add(String.format("@Size(max=%s)", context.size))
             }
 
             if (context.javaType == "Date") {
@@ -32,6 +33,7 @@ class JavaSignature : Helper<Column> {
             }
 
             if (context.option?.format?.isNotEmpty() == true) {
+                //우선 date타입만
                 expr.add(String.format("@JsonFormat(pattern = \"%s\")", context.option?.format))
             }
 
