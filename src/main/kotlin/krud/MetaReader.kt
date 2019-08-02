@@ -26,7 +26,7 @@ class MetaReader {
             val metaData = conn.metaData
 
             val resultSet = metaData.getTables(
-                    sqlModel.schema, null, sqlModel.name,
+                    sqlModel.schema, null, sqlModel.name?.toUpperCase(),
                     arrayOf("TABLE")
             )
 
@@ -43,7 +43,7 @@ class MetaReader {
 
 
     fun readColumn(sqlModel: SqlModel, metaData: DatabaseMetaData) {
-        val rs = metaData.getColumns(sqlModel.schema, null, sqlModel.name, null)
+        val rs = metaData.getColumns(sqlModel.schema, null, sqlModel.name?.toUpperCase(), null)
 
         while (rs.next()) {
 
