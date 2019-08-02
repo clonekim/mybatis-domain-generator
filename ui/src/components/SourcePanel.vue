@@ -34,6 +34,10 @@
 
    created() {
 
+     this.$bus.$on('clearBuffer', () => {
+        this.clearBuffer()
+     })
+
      this.$bus.$on('onSource', (data) => {
 
        if(data[`${this.format}`] === true) {
@@ -65,10 +69,7 @@
              })
 
        }else {
-         Object.assign(this.model, {
-           name: '',
-           source: ''
-         })
+           this.clearBuffer()
        }
 
      })
@@ -76,9 +77,18 @@
 
    beforeDestroy() {
      this.$bus.$off('onSource')
+     this.$bus.$off('clearBuffer')
    },
 
    methods: {
+
+     clearBuffer() {
+      Object.assign(this.model, {
+          name: '',
+          source: ''
+      })
+
+     },
 
      copyAndPaste() {
 

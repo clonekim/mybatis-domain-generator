@@ -227,9 +227,14 @@
         return !col.scale
      },
 
-     onColumnTypeSelected (col, e) {
-        col.java_type = e.name
-        col.option = e
+     onColumnTypeSelected (col, {name, value, format}) {
+
+        if(name && value) {
+            col.java_type = Object.assign(col.java_type, { name, value })
+        }
+
+        col.java_type = Object.assign(col.java_type, { format })
+
      },
 
      scanTable() {
@@ -252,6 +257,8 @@
 
 
          this.$emit('onProcessing', true)
+
+         this.$bus.$emit('clearBuffer')
 
          this.$http
              .post('/meta', data)

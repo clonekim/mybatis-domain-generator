@@ -8,7 +8,7 @@
    </select>
 
     <p v-if=" selected.indexOf('LocalDate') > 0">
-       <input type="text" v-model="format" style="width:115px;">
+       <input type="text" v-model="format" style="width:115px;" @change="inputChanged">
     </p>
   </div>
 </template>
@@ -18,7 +18,7 @@
  export default {
     props: {
       propSelected: {
-        type: String,
+        type: Object,
         required: true
       },
 
@@ -50,7 +50,7 @@
 
     beforeMount() {
 
-        let option = this.options.filter(i => i.name === this.propSelected)
+        let option = this.options.filter(i => i.name === this.propSelected.name)
 
         if(option.length == 1)
             this.selected = option[0].value
@@ -91,6 +91,14 @@
            }
         }
 
+    },
+
+    methods: {
+        inputChanged(e) {
+            this.$emit('onColumnTypeSelected', {
+                           format: e.target.value
+                         })
+        }
     }
  }
 </script>

@@ -85,20 +85,17 @@ data class Column(
         @JsonProperty("data_type")
         var dataType: Int,
 
-        @JsonProperty("option")
-        var option: Option? = null,
 
         @JsonProperty("scale")
         var scale: Scale? = null) {
 
+
         @JsonProperty("java_type")
-        var javaType: String = sqlType.type
+        var javaType: JavaType = DefaultJavaType.match(sqlType.type)
 }
 
 
 data class Scale(var size: Int, var precision: Int )
-
-data class Option(val name: String, val value: String, val format: String?= null)
 
 enum class SqlType(val type: String) {
     VARCHAR("String"),
@@ -110,3 +107,28 @@ enum class SqlType(val type: String) {
     CLOB("String");
 
 }
+
+data class JavaType( val name: String, val value: String, val format: String?= null)
+
+
+object DefaultJavaType {
+
+    val STRING = JavaType("String", "String")
+    val PRIME_INT =  JavaType("int", "int")
+    val PRIME_LONG = JavaType("long", "long")
+    val INTEGER = JavaType("Integer", "Integer")
+    val LONG = JavaType("Long", "long")
+    val DATE = JavaType("Date", "java.util.Date")
+    val LOCALDATE = JavaType("LocalDate", "java.time.LocalDate", "yyyy-MM-dd")
+    val LOCALDATE_TIME = JavaType("LocalDateTime", "java.time.LocalDateTime", "yyyy-MM-dd HH:mm:ss")
+
+    private val javaTypes = listOf(
+        STRING, PRIME_INT, PRIME_LONG, INTEGER, LONG, DATE, LOCALDATE, LOCALDATE_TIME
+    )
+
+    fun match (value: String ): JavaType {
+        return javaTypes.first { it.name == value }
+    }
+
+}
+
