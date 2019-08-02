@@ -1,6 +1,5 @@
 package krud.template
 
-import com.fasterxml.jackson.databind.node.ArrayNode
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.Helper
 import com.github.jknack.handlebars.Options
