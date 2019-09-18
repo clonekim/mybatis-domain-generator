@@ -10,7 +10,7 @@ import lombok.Data;
 @NoArgsConstructor
 public class {{pojoName}} {
   {{#columns}}
-  @JsonProperty("{{lower name}}")
+  {{#if jsonProperty}}@JsonProperty("{{lower name}}"){{/if}}
   {{javaSig this}}
   {{/columns}}
 

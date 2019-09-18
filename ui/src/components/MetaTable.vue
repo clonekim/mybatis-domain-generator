@@ -115,6 +115,10 @@
               <label v-if="param.model"> Validation
                 <input type="checkbox" v-model="param.validation">
               </label>
+
+              <label v-if="param.model"> @JsonProperty
+                <input type="checkbox" v-model="param.json_property">
+              </label>
           </div>
 
           <div v-if="!sqlTurnOn">
@@ -183,6 +187,7 @@
          package_name: 'com.koreanair.',
          pojo_name: null,
          json_prefix: null,
+         json_property: false,
          model: false,
          dao: false,
          mapper: false,

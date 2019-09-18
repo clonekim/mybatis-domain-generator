@@ -36,6 +36,9 @@ data class SqlModel(
         @JsonProperty("result_map")
         val useResultMap: Boolean = false,
 
+        @JsonProperty("json_property")
+        val jsonProperty: Boolean = false,
+
         @JsonProperty("json_prefix")
         val jsonPrefix: String? = null,
 
