@@ -7,4 +7,10 @@ import {{packageName}}.model.{{pojoName}};
 @Mapper
 public interface {{pojoName}}Dao extends IDaoProvider<{{pojoName}}> {
 
+    {{#unless underscore}}
+    @Override
+    default boolean isUnderscore() {
+        return false;
+    }
+    {{/unless}}
 }

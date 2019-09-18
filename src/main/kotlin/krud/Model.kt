@@ -36,8 +36,8 @@ data class SqlModel(
         @JsonProperty("result_map")
         val useResultMap: Boolean = false,
 
-        @JsonProperty("json_property")
-        val jsonProperty: Boolean = false,
+        @JsonProperty("underscore")
+        val underscore: Boolean = false,
 
         @JsonProperty("json_prefix")
         val jsonPrefix: String? = null,
@@ -49,7 +49,7 @@ data class SqlModel(
         var updates: List<Column> = mutableListOf(),
 
         @JsonIgnore
-        var keys: List<String> = mutableListOf(),
+        var keys: List<Map<String, String>> = mutableListOf(),
 
         @JsonIgnore
         var keysize: Int = 0,
@@ -69,6 +69,9 @@ data class SqlModel(
 data class Column(
         @JsonProperty("name")
         var name: String,
+
+        @JsonIgnore
+        var javaName: String? = null,
 
         @JsonProperty("sql_type")
         var sqlType: SqlType,

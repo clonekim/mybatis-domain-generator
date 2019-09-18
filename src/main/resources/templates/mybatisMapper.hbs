@@ -3,7 +3,7 @@
 <mapper namespace="{{packageName}}.dao.{{pojoName}}Dao">
 
     {{#if useResultMap}}<resultMap type="{{packageName}}.model.{{pojoName}}" id="{{pojoName}}Result">
-        {{#columns}}{{#eq dataType 2005}}<result property="{{javaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType}}" />{{else}}<result property="{{javaName name}}" column="{{name}}"/>{{/eq}}
+        {{#columns}}{{#eq dataType 2005}}<result property="{{toJavaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType}}" />{{else}}<result property="{{toJavaName name}}" column="{{name}}"/>{{/eq}}
         {{/columns}}
     </resultMap>{{/if}}
 
@@ -13,8 +13,8 @@
              {{/columns}}
         FROM {{name}}
         <where>{{#columns}}
-            <if test=" {{lower name}} != null {{#eq javaType "String"}}and {{lower name}}.trim() != ''{{/eq}} ">
-                AND {{name}} = {{sharp name}}
+            <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq}} ">
+                AND {{name}} = {{sharp javaName}}
             </if>{{/columns}}
         </where>
     </sql>
@@ -34,13 +34,13 @@
         INSERT INTO {{name}}
 
         <trim prefix="(" suffix=")" suffixOverrides=",">{{#columns}}
-            <if test=" {{lower name}} != null {{#eq javaType "String"}}and {{lower name}}.trim() != ''{{/eq}} ">
+            <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq}} ">
                 {{name}},
             </if>{{/columns}}
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">{{#columns}}
-            <if test=" {{lower name}} != null {{#eq javaType "String"}}and {{lower name}}.trim() != ''{{/eq}} ">
-                {{sharp name}},
+            <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq}} ">
+                {{sharp javaName}},
             </if>{{/columns}}
         </trim>
     </insert>
@@ -49,12 +49,12 @@
         UPDATE {{name}}
         <trim prefix="SET" suffixOverrides=",">
         {{#updates}}
-            <if test=" {{lower name}} != null {{#eq javaType "String"}}and {{lower name}}.trim() != ''{{/eq}} ">
-                {{name}} = {{sharp name}},
+            <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq}} ">
+                {{name}} = {{sharp javaName}},
             </if>{{/updates}}
         </trim>
         WHERE
-        {{#keys}}{{#unless @first}}AND {{/unless}}{{.}} = {{sharp .}}
+        {{#keys}}{{#unless @first}}AND {{/unless}}{{key}} = {{sharp value}}
         {{/keys}}
     </update>
 
@@ -63,14 +63,14 @@
           COUNT(1)
         FROM {{name}}
         WHERE
-        {{#keys}}{{#unless @first}}AND {{/unless}}{{.}} = {{sharp .}}
+        {{#keys}}{{#unless @first}}AND {{/unless}}{{key}} = {{sharp value}}
         {{/keys}}
     </select>
 
 
     <delete id="_delete" parameterType="Map">
         DELETE FROM {{name}} WHERE
-        {{#keys}}{{#unless @first}}AND {{/unless}}{{.}} = {{sharp }}
+        {{#keys}}{{#unless @first}}AND {{/unless}}{{key}} = {{sharp value}}
         {{/keys}}
     </delete>
 </mapper>

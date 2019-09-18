@@ -28,11 +28,11 @@ public class {{pojoName}}Controller {
             return null;
 
         {{pojoName}} t = new {{pojoName}}();
-        {{#eq keysize 1}}{{#keys}}t.set{{setter .}}(id);{{/keys}}{{/eq}}
+        {{#eq keysize 1}}{{#keys}}t.set{{setter key}}(id);{{/keys}}{{/eq}}
         {{#gt keysize 1}}
         String[] parts = id.split("-");
         {{#keys}}
-         t.set{{setter .}}(parts[{{@index}}]);{{/keys}}
+         t.set{{setter key}}(parts[{{@index}}]);{{/keys}}
         {{/gt}}
         /*
             Your Code here!

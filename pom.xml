@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>krud</groupId>
 	<artifactId>krud</artifactId>
-	<version>0.0.12</version>
+	<version>0.0.13</version>
 	<name>krud-server</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -96,6 +96,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>backend-${project.version}</finalName>
 		<sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
 		<testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 <!--		<resources>-->

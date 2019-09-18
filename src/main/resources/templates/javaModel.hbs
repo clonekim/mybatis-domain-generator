@@ -10,14 +10,14 @@ import lombok.Data;
 @NoArgsConstructor
 public class {{pojoName}} {
   {{#columns}}
-  {{#if jsonProperty}}@JsonProperty("{{lower name}}"){{/if}}
+  {{#if underscore}}@JsonProperty("{{lower name}}"){{/if}}
   {{javaSig this}}
   {{/columns}}
 
   {{#if keys}}
   public String getId() {
     return String.format("{{#keys}}%s{{#unless @last}}-{{/unless}}{{/keys}}",
-        {{#keys}}{{javaName this}}{{#unless @last}}, {{/unless}}{{/keys}}
+        {{#keys}}{{toJavaName key}}{{#unless @last}}, {{/unless}}{{/keys}}
     );
   }
   {{/if}}

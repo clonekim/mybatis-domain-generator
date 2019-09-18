@@ -15,7 +15,7 @@ enum class CustomHelper : Helper<Any> {
        }
    },
 
-    javaName {
+    toJavaName {
         override fun toApply(value: Any, options: Options): String {
             return CaseUtils.toCamelCase(value.toString(), false, '_')
         }
@@ -29,7 +29,7 @@ enum class CustomHelper : Helper<Any> {
 
     sharp {
         override fun toApply(value: Any, options: Options): String {
-            return String.format("#{%s}", value.toString().toLowerCase())
+            return String.format("#{%s}", value.toString())
         }
     },
 

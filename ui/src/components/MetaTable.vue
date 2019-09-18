@@ -116,8 +116,8 @@
                 <input type="checkbox" v-model="param.validation">
               </label>
 
-              <label v-if="param.model"> @JsonProperty
-                <input type="checkbox" v-model="param.json_property">
+              <label v-if="param.model"> Underscore
+                <input type="checkbox" v-model="param.underscore">
               </label>
           </div>
 
@@ -184,10 +184,10 @@
        param: {
          schema: 'UKFOS',
          name: null,
-         package_name: 'com.koreanair.',
+         package_name: 'com.koreanair',
          pojo_name: null,
          json_prefix: null,
-         json_property: false,
+         underscore: false,
          model: false,
          dao: false,
          mapper: false,

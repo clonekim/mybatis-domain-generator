@@ -7,18 +7,19 @@ import com.github.jknack.handlebars.helper.StringHelpers
 import com.github.jknack.handlebars.io.ClassPathTemplateLoader
 import krud.KtLog
 import krud.SqlModel
+import org.apache.commons.text.CaseUtils
 import org.springframework.stereotype.Component
 import java.io.Writer
 
 @Component
 class TemplateService {
 
-    companion object:KtLog()
+    companion object : KtLog()
 
 
     private val handlebars = Handlebars(ClassPathTemplateLoader("/templates").apply {
         suffix = ".hbs"
-    }).with(EscapingStrategy.XML).with(EscapingStrategy.NOOP) .apply {
+    }).with(EscapingStrategy.XML).with(EscapingStrategy.NOOP).apply {
         JavaSignature.register(this)
         CustomHelper.register(this)
         StringHelpers.register(this)
@@ -28,24 +29,49 @@ class TemplateService {
             registerHelper(h.name, h)
     }
 
-    private val hbsMap by lazy { mapOf(
-            "model" to handlebars.compile("javaModel"),
-            "dao" to handlebars.compile("javaDao"),
-            "controller" to handlebars.compile("javaController"),
-            "vue" to handlebars.compile("vueData"),
-            "mapper" to handlebars.compile("mybatisMapper"),
-            "sql" to handlebars.compile("sqlMapper")
-    )}
-
+    private val hbsMap by lazy {
+        mapOf(
+                "model" to handlebars.compile("javaModel"),
+                "dao" to handlebars.compile("javaDao"),
+                "controller" to handlebars.compile("javaController"),
+                "vue" to handlebars.compile("vueData"),
+                "mapper" to handlebars.compile("mybatisMapper"),
+                "sql" to handlebars.compile("sqlMapper")
+        )
+    }
 
 
     fun process(writer: Writer, sqlModel: SqlModel, hbs: String) {
         log.debug("Processing ==> {}, Template => {}", sqlModel, hbs)
-        sqlModel.keys = sqlModel.columns.filter { it.key }.map { it.name }
+
+        sqlModel.columns.forEach {
+
+            it.javaName = if (sqlModel.underscore) {
+                it.name.toLowerCase()
+            } else {
+                CaseUtils.toCamelCase(it.name, false, '_')
+            }
+        }
+
+
+        sqlModel.keys = sqlModel.columns.filter { it.key }.map {
+            it.run {
+
+                mapOf("key" to this.name,
+                        "value" to if (sqlModel.underscore) {
+                            this.name.toLowerCase()
+                        } else {
+                            CaseUtils.toCamelCase(this.name, false, '_')
+                        })
+
+            }
+        }
+
+
         sqlModel.updates = sqlModel.columns.filter { !it.key }
         sqlModel.keysize = sqlModel.keys.size
 
-        if(sqlModel.statement != null) {
+        if (sqlModel.statement != null) {
             sqlModel.statement = sqlModel.statement!!
                     .replace("<", "&lg;")
                     .replace(">", "&gt;")

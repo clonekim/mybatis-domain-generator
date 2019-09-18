@@ -3,15 +3,15 @@
 <mapper namespace="{{packageName}}.dao.{{pojoName}}Dao">
 
     {{#if useResultMap}}<resultMap type="{{packageName}}.model.{{pojoName}}" id="{{pojoName}}Result">
-        {{#columns}}{{#eq dataType 2005}}<result property="{{javaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType}}" />{{else}}<result property="{{javaName name}}" column="{{name}}"/>{{/eq}}
+        {{#columns}}{{#eq dataType 2005}}<result property="{{toJavaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType}}" />{{else}}<result property="{{toJavaName name}}" column="{{name}}"/>{{/eq}}
         {{/columns}}
     </resultMap>{{/if}}
 
     <sql id="selectWhere">
         {{statement}}
         <where>{{#columns}}
-            <if test=" {{lower name}} != null {{#eq javaType "String"}}and {{lower name}}.trim() != ''{{/eq}} ">
-                AND {{name}} = {{sharp name}}
+            <if test=" {{name}} != null {{#eq javaType.name "String"}}and {{name}}.trim() != ''{{/eq}} ">
+                AND {{name}} = {{sharp javaName}}
             </if>{{/columns}}
         </where>
     </sql>
