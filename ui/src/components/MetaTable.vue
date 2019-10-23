@@ -182,9 +182,9 @@
        sqlTurnOn: false, //SQL쿼리 보기
        viewSample: false, // 실제 샘플보기
        param: {
-         schema: 'UKFOS',
+         schema: null,
          name: null,
-         package_name: 'com.koreanair',
+         package_name: null,
          pojo_name: null,
          json_prefix: null,
          underscore: false,
@@ -203,7 +203,13 @@
      }
    },
 
-
+   created() {
+      this.$http.get('/editConfig')
+      .then( res => {
+        this.param.schema = res.data.schema
+        this.param.package_name = res.data.packageName
+      })
+   },
 
    watch:{
 

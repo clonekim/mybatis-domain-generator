@@ -9,3 +9,7 @@ spring:
     url: jdbc:oracle:thin:@//kfosdevdb_vip.koreanair.com:2003/OPERAT
     username: kfos
     password: fosk2117
+
+edit-config:
+  schema: UKFOS
+  package-name: com.koreanair

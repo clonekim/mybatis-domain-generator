@@ -1,7 +1,10 @@
 package krud
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
 import javax.validation.constraints.NotEmpty
 
 
@@ -65,7 +68,6 @@ data class SqlModel(
 )
 
 
-
 data class Column(
         @JsonProperty("name")
         var name: String,
@@ -96,12 +98,12 @@ data class Column(
         var scale: Scale? = null) {
 
 
-        @JsonProperty("java_type")
-        var javaType: JavaType = DefaultJavaType.match(sqlType.type)
+    @JsonProperty("java_type")
+    var javaType: JavaType = DefaultJavaType.match(sqlType.type)
 }
 
 
-data class Scale(var size: Int, var precision: Int )
+data class Scale(var size: Int, var precision: Int)
 
 enum class SqlType(val type: String) {
     VARCHAR("String"),
@@ -114,13 +116,13 @@ enum class SqlType(val type: String) {
 
 }
 
-data class JavaType( val name: String, val value: String, val format: String?= null)
+data class JavaType(val name: String, val value: String, val format: String? = null)
 
 
 object DefaultJavaType {
 
     val STRING = JavaType("String", "String")
-    val PRIME_INT =  JavaType("int", "int")
+    val PRIME_INT = JavaType("int", "int")
     val PRIME_LONG = JavaType("long", "long")
     val INTEGER = JavaType("Integer", "Integer")
     val LONG = JavaType("Long", "long")
@@ -129,12 +131,24 @@ object DefaultJavaType {
     val LOCALDATE_TIME = JavaType("LocalDateTime", "java.time.LocalDateTime", "yyyy-MM-dd HH:mm:ss")
 
     private val javaTypes = listOf(
-        STRING, PRIME_INT, PRIME_LONG, INTEGER, LONG, DATE, LOCALDATE, LOCALDATE_TIME
+            STRING, PRIME_INT, PRIME_LONG, INTEGER, LONG, DATE, LOCALDATE, LOCALDATE_TIME
     )
 
-    fun match (value: String ): JavaType {
+    fun match(value: String): JavaType {
         return javaTypes.first { it.name == value }
     }
 
 }
 
+
+@Configuration
+@ConfigurationProperties(prefix = "edit-config")
+class EditConfig {
+    @JsonProperty("schema")
+    lateinit var schema: String
+
+    @JsonProperty("packageName")
+    lateinit var packageName: String
+
+
+}

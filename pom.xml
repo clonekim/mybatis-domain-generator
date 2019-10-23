@@ -10,7 +10,7 @@
     </parent>
     <groupId>krud</groupId>
     <artifactId>krud</artifactId>
-    <version>0.0.13</version>
+    <version>0.0.14</version>
     <name>krud-server</name>
     <description>Demo project for Spring Boot</description>
 
@@ -100,15 +100,15 @@
         <finalName>backend-${project.version}</finalName>
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
-        <!--		<resources>-->
-        <!--			<resource>-->
-        <!--				<directory>src/main/resources</directory>-->
-        <!--				<filtering>true</filtering>-->
-        <!--				<excludes>-->
-        <!--					<exclude>application.yml</exclude>-->
-        <!--				</excludes>-->
-        <!--			</resource>-->
-        <!--		</resources>-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>application.yml</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
