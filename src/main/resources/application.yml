@@ -1,15 +1,12 @@
 logging:
   level:
     krud: DEBUG
+    com.zaxxer.hikari: DEBUG
 
 
 spring:
   datasource:
     driverClassName: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@//kfosdevdb_vip.koreanair.com:2003/OPERAT
-    username: kfos
-    password: fosk2117
-
-edit-config:
-  schema: UKFOS
-  package-name: com.koreanair
+    url: jdbc:oracle:thin:@//${db.host}:${db.port}/${db.schema}
+    username: ${db.user}
+    password: ${db.password}
