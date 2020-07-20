@@ -2,6 +2,8 @@ package krud
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import java.io.BufferedReader
+import java.sql.Clob
 import java.sql.DatabaseMetaData
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -77,6 +79,7 @@ class MetaReader {
 
         return statement!!
                 .replace("\\s+".toRegex(), " ")
+                .replace(";", "", false)
                 .replace("INSERT ", "<INSERT>", true)
                 .replace("UPDATE ", "<UPDATE>", true)
                 .replace("DELETE ", "<DELETE>", true)
@@ -164,7 +167,17 @@ class MetaReader {
 
 
                     sqlModel.samples += rows.map {
-                        it.map { m -> m["value"] }
+                        it.map { m ->
+
+                            val value =  m["value"]
+
+                            if  (value is Clob){
+                                return@map BufferedReader(value.characterStream).use(BufferedReader::readLine)
+                            }else {
+                                return@map value
+                            }
+
+                        }
                     }
                 }
 
