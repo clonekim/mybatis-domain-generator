@@ -5,12 +5,6 @@ import org.apache.ibatis.annotations.Mapper;
 import {{packageName}}.model.{{pojoName}};
 
 @Mapper
-public interface {{pojoName}}Dao extends IDaoProvider<{{pojoName}}> {
+public interface {{pojoName}}Dao {
 
-    {{#unless underscore}}
-    @Override
-    default boolean isUnderscore() {
-        return false;
-    }
-    {{/unless}}
 }

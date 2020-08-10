@@ -2,25 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="{{packageName}}.dao.{{pojoName}}Dao">
 
-    {{#if useResultMap}}<resultMap type="{{packageName}}.model.{{pojoName}}" id="{{pojoName}}Result">
-        {{#columns}}{{#eq dataType 2005}}<result property="{{toJavaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType}}" />{{else}}<result property="{{toJavaName name}}" column="{{name}}"/>{{/eq}}
-        {{/columns}}
-    </resultMap>{{/if}}
+    {{#if useResultMap}}
+        <resultMap type="{{packageName}}.model.{{pojoName}}" id="{{pojoName}}Result">
+            {{#columns~}}
+                {{#eq dataType 2005}}
+                    <result property="{{toJavaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType.name}}" />
+                    {{else~}}
+                    <result property="{{toJavaName name}}" column="{{name}}"/>
+                {{/eq~}}
+            {{/columns~}}
+        </resultMap>
+    {{/if}}
 
     <sql id="selectWhere">
         SELECT
-             {{#columns}}{{name}}{{#unless @last}},{{/unless}}
+             {{#columns}}
+             {{name}}{{#unless @last}},{{/unless~}}
              {{/columns}}
         FROM {{name}}
-        <where>{{#columns}}
-            <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq}} ">
+        <where>
+            {{#columns~}}
+            <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq~}} ">
                 AND {{name}} = {{sharp javaName}}
-            </if>{{/columns}}
+            </if>
+            {{/columns~}}
         </where>
     </sql>
 
 
-    <select id="_select" parameterType="Map" resultType="{{packageName}}.model.{{pojoName}}">
+    <select id="_select" parameterType="Map" resultType="{{packageName}}.domain.{{pojoName}}">
         <include refid="selectWhere" />
     </select>
 
@@ -33,15 +43,19 @@
     <insert id="_insert" parameterType="Map">
         INSERT INTO {{name}}
 
-        <trim prefix="(" suffix=")" suffixOverrides=",">{{#columns}}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            {{#columns~}}
             <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq}} ">
                 {{name}},
-            </if>{{/columns}}
+            </if>
+            {{/columns~}}
         </trim>
-        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">{{#columns}}
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            {{#columns~}}
             <if test=" {{javaName}} != null {{#eq javaType.name "String"}}and {{javaName}}.trim() != ''{{/eq}} ">
                 {{sharp javaName}},
-            </if>{{/columns}}
+            </if>
+            {{/columns~}}
         </trim>
     </insert>
 
@@ -70,7 +84,8 @@
 
     <delete id="_delete" parameterType="Map">
         DELETE FROM {{name}} WHERE
-        {{#keys}}{{#unless @first}}AND {{/unless}}{{key}} = {{sharp value}}
+        {{~#keys}}
+            {{~#unless @first}}AND {{/unless}}{{key}} = {{sharp value}}
         {{/keys}}
     </delete>
 </mapper>

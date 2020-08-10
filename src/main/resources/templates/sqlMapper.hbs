@@ -2,17 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="{{packageName}}.dao.{{pojoName}}Dao">
 
-    {{#if useResultMap}}<resultMap type="{{packageName}}.model.{{pojoName}}" id="{{pojoName}}Result">
-        {{#columns}}{{#eq dataType 2005}}<result property="{{toJavaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType}}" />{{else}}<result property="{{toJavaName name}}" column="{{name}}"/>{{/eq}}
-        {{/columns}}
-    </resultMap>{{/if}}
+    {{#if useResultMap}}
+    <resultMap type="{{packageName}}.model.{{pojoName}}" id="{{pojoName}}Result">
+        {{#columns~}}
+            {{#eq dataType 2005}}
+            <result property="{{toJavaName name}}" column="{{name}}" jdbcType="CLOB" javaType="{{javaType.name}}" />
+            {{else~}}
+                <result property="{{toJavaName name}}" column="{{name}}"/>
+            {{/eq~}}
+        {{/columns~}}
+    </resultMap>
+    {{/if}}
 
     <sql id="selectWhere">
-        {{statement}}
-        <where>{{#columns}}
+      {{statement}}
+        <where>
+            {{#columns~}}
             <if test=" {{name}} != null {{#eq javaType.name "String"}}and {{name}}.trim() != ''{{/eq}} ">
                 AND {{name}} = {{sharp javaName}}
-            </if>{{/columns}}
+            </if>
+            {{/columns~}}
         </where>
     </sql>
 
@@ -25,6 +34,5 @@
     <select id="selectCount" parameterType="Map" resultType="int">
         <include refid="selectWhere" />
     </select>
-
 
 </mapper>
