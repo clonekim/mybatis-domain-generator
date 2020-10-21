@@ -13,5 +13,5 @@ spring:
 
 editConfig:
   schema: ${schema}
-  packageName: c${package}
+  packageName: ${package}
 
