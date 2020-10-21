@@ -10,11 +10,12 @@ mvn clean package -DskipDockerTag
 사용자 계정이 wfare 비밀번호가 1234일 경우 
 
 ```
-docker run --name krud  -p 8080:8080  -e db.host=192.168.11.22
-          -e db.port=2003 
-          -e db.schema=WBOSANG
-          -e db.user=wfare
-         -e db.password=1234
-         -e editConfig.schema=WFARE
-        -e editConfig.packageName=com.koreanair -d  krud
+docker run --name krud  -p 8080:8080 \n 
+  -e db.host=192.168.11.22 \n
+  -e db.port=1339   \n
+  -e db.schema=eshop \n
+  -e db.user=foobar \n
+  -e db.password=1234 \n
+  -e schema=X \n
+  -e  package=com.koreanair -d krud
 ```
