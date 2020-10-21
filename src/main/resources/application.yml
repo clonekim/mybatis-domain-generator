@@ -6,10 +6,10 @@ logging:
 spring:
   datasource:
     driverClassName: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@(DESCRIPTION=(FAILOVER=ON)(CONNECT_TIMEOUT=5)(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=kcosprddb1.koreanair.com)(PORT=2003))(ADDRESS=(PROTOCOL=TCP)(HOST=kcosprddb2.koreanair.com)(PORT=2003)))(CONNECT_DATA=(SERVICE_NAME=COPERAAPPL)))
-    username: cps
-    password: service
+    url: 
+    username: 
+    password: 
 
 editConfig:
-  schema: CPS
-  packageName: com.koreanair
+  schema: x
+  packageName: foobar 
