@@ -19,3 +19,5 @@ docker run --name krud  -p 8080:8080 \n
   -e schema=X \n
   -e package=com.koreanair -d krud
 ```
+
+![스크린샷](./screenshot.png)
